@@ -30,6 +30,7 @@ namespace ServiceBus
             Console.WriteLine("     2. RECEIVE from Service Bus QUEUE");
             Console.WriteLine("     3. SEND to Service Bus TOPIC");
             Console.WriteLine("     4. RECEIVE from Service Bus SUBSCRIPTION");
+            Console.WriteLine("     5. QUEUE Status");
             Console.WriteLine("======================================================");
             Console.Write("Enter the action you want to perform:");
             int action = Convert.ToInt32(Console.ReadLine());
@@ -52,7 +53,11 @@ namespace ServiceBus
                     // Receive Messages from SB Susbcription
                     ReceiveFromSubscriptionMainAsync().GetAwaiter().GetResult();
                     break;
-                default:
+                case 5:
+                        // Receive Messages from SB Susbcription
+                        CheckStatusMainAsync().GetAwaiter().GetResult();
+                        break;
+               default:
                     break;
             }
                 Console.Write("Do you want to exit? y/n: ");
