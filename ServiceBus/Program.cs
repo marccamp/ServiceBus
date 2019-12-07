@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.ServiceBus;
+using Microsoft.Azure.ServiceBus.Management;
 
 namespace ServiceBus
 {
@@ -290,7 +291,22 @@ namespace ServiceBus
             Console.WriteLine($"- Executing Action: {context.Action}");
             return Task.CompletedTask;
         }
-        
         //ENDS RECEIVE MESSAGES FROM SERVICE BUS SUBSCRIPTION
+
+        // START: CHECK QUEUE STATUS
+
+        static async Task CheckStatusMainAsync()
+        {
+            var managementClient = new ManagementClient(ServiceBusConnectionString);
+            var queue = await managementClient.GetQueueRuntimeInfoAsync(QueueName);
+            var messageCount = queue.MessageCount;
+
+            Console.WriteLine("Messages in queue: "+ messageCount);
+
+
+        }
+
+        // END: CHECK QUEUE STATUS
+
     }
 }
