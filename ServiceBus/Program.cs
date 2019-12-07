@@ -30,7 +30,7 @@ namespace ServiceBus
             Console.WriteLine("     2. RECEIVE from Service Bus QUEUE");
             Console.WriteLine("     3. SEND to Service Bus TOPIC");
             Console.WriteLine("     4. RECEIVE from Service Bus SUBSCRIPTION");
-            Console.WriteLine("     5. QUEUE Status");
+            Console.WriteLine("     5. STATUS");
             Console.WriteLine("======================================================");
             Console.Write("Enter the action you want to perform:");
             int action = Convert.ToInt32(Console.ReadLine());
@@ -191,7 +191,7 @@ namespace ServiceBus
 
             int numberOfMessages = Convert.ToInt32(Console.ReadLine());
 
-            // This line was used to send a fixed amount of messages. It is not needed because we are now prompting for teh amount of messages to be sent.
+            // This line was used to send a fixed amount of messages. It is not needed because we are now prompting for the amount of messages to be sent.
             //const int numberOfMessages = 10;
             topicClient = new TopicClient(ServiceBusConnectionString, TopicName);
 
@@ -299,15 +299,29 @@ namespace ServiceBus
         //ENDS RECEIVE MESSAGES FROM SERVICE BUS SUBSCRIPTION
 
         // START: CHECK QUEUE STATUS
-
+        
+            // TODO: Write a better logic to do not need to statically define queues, topics and Subscriptions. Instead, read from Namespace
         static async Task CheckStatusMainAsync()
         {
             var managementClient = new ManagementClient(ServiceBusConnectionString);
             var queue = await managementClient.GetQueueRuntimeInfoAsync(QueueName);
-            var messageCount = queue.MessageCount;
+            var sub1 = await managementClient.GetSubscriptionRuntimeInfoAsync(TopicName, "s1");
+            var sub2 = await managementClient.GetSubscriptionRuntimeInfoAsync(TopicName, "s2");
+            var sub3 = await managementClient.GetSubscriptionRuntimeInfoAsync(TopicName, "s3");
+            var queueMessageCount = queue.MessageCount;
+            var sub1MessageCount = sub1.MessageCount;
+            var sub2MessageCount = sub3.MessageCount;
+            var sub3MessageCount = sub3.MessageCount;
+                       
+            Console.WriteLine("Messages in queue: "+ queueMessageCount);
+            Console.WriteLine("Messages in Sub1: " + sub1MessageCount); 
+            Console.WriteLine("Messages in Sub2: " + sub2MessageCount);
+            Console.WriteLine("Messages in Sub3: " + sub3MessageCount);
 
-            Console.WriteLine("Messages in queue: "+ messageCount);
 
+            // Wait for an ENTER to close
+            //Console.ReadKey();
+            //await managementClient.CloseAsync();
 
         }
 
