@@ -67,7 +67,7 @@ namespace ServiceBus
 
         }
 
-        //STARTS SEND MESSAGES TO SERVICE BUS QUEUE
+        //SEND MESSAGES TO SERVICE BUS QUEUE
         static async Task SendtoqueueMainAsync()
         {
             // Adding this section to prompt for the number of messages to be sent
@@ -106,8 +106,11 @@ namespace ServiceBus
                     string messageBody = $"QueueMessage {i}";
                     var message = new Message(Encoding.UTF8.GetBytes(messageBody));
 
+                    // Getting current time to add it to print it on screen
+                    var time = DateTime.UtcNow;
+
                     //Write the body of the message to the console
-                    Console.WriteLine($"Sending message: {messageBody}");
+                    Console.WriteLine($"Sending message: {messageBody} at {time}");
 
                     //Send the message to the queue
                     await queueClient.SendAsync(message);
@@ -119,9 +122,9 @@ namespace ServiceBus
             }
         }
 
-        //ENS SEND MESSAGES TO SERVICE BUS QUEUE
+        //SEND MESSAGES TO SERVICE BUS QUEUE
 
-        //STARTS RECEIVE MESSAGES FROM SERVICE BUS QUEUE
+        //RECEIVE MESSAGES FROM SERVICE BUS QUEUE
         static async Task ReceiveFromQueueMainAsync()
         {
             queueClient = new QueueClient(ServiceBusConnectionString, QueueName);
@@ -159,7 +162,8 @@ namespace ServiceBus
         static async Task ProcessMessagesAsync(Message message, CancellationToken token)
         {
             //Process the message
-            Console.WriteLine($"Receive message: SequenceNumber:{message.SystemProperties.SequenceNumber} Body:{Encoding.UTF8.GetString(message.Body)}");
+            //Added MessageID:{message.MessageId} and EnqueuedTimeUtc:{message.SystemProperties.EnqueuedTimeUtc}
+            Console.WriteLine($"Receive message:  MessageID:{message.MessageId} SequenceNumber:{message.SystemProperties.SequenceNumber} Body:{Encoding.UTF8.GetString(message.Body)} EnqueuedTimeUtc:{message.SystemProperties.EnqueuedTimeUtc}");
 
             // Complete the message so that it is not received again
             // This can be done only if the queue Client is created in ReceiveMode.Peeklock mode (which is the default)
@@ -180,9 +184,9 @@ namespace ServiceBus
             Console.WriteLine($"- Executing Action: {context.Action}");
             return Task.CompletedTask;
         }
-        //ENDS RECEIVE MESSAGES FROM SERVICE BUS QUEUE
+        //RECEIVE MESSAGES FROM SERVICE BUS QUEUE
 
-        //STARTS SEND MESSAGES FROM SERVICE BUS QUEUE
+        //SEND MESSAGES TO SERVICE BUS TOPIC
         static async Task SendToTopicMainAsync()
         {
             // Adding this section to prompt for the number of messages to be sent
@@ -218,8 +222,11 @@ namespace ServiceBus
                     string messageBody = $"TopicMessage {i}";
                     var message = new Message(Encoding.UTF8.GetBytes(messageBody));
 
-                    // Write the body of teh mesage to the console
-                    Console.WriteLine($"Sending message: {messageBody}");
+                    // Getting current time to add it to print it on screen
+                    var time = DateTime.UtcNow;
+
+                    //Write the body of the message to the console
+                    Console.WriteLine($"Sending message: {messageBody} at {time}");
 
                     // Send the message to the topic.
                     await topicClient.SendAsync(message);
@@ -231,9 +238,9 @@ namespace ServiceBus
             }
         }
 
-        //ENDS SEND MESSAGES FROM SERVICE BUS QUEUE
+        //SEND MESSAGES TO SERVICE BUS TOPIC
 
-        //STARTS RECEIVE MESSAGES FROM SERVICE BUS SUBSCRIPTION
+        //RECEIVE MESSAGES FROM SERVICE BUS SUBSCRIPTION
                 static async Task ReceiveFromSubscriptionMainAsync()
         {
             Console.WriteLine("======================================================");
@@ -274,7 +281,7 @@ namespace ServiceBus
         static async Task SusbcriptionProcessMessagesAsync(Message message, CancellationToken token)
         {
             // Process the message
-            Console.WriteLine($"Received message: SequenceNumber:{message.SystemProperties.SequenceNumber} Body:{Encoding.UTF8.GetString(message.Body)}");
+            Console.WriteLine($"Received message: MessageID:{message.MessageId} 2SequenceNumber:{message.SystemProperties.SequenceNumber} Body:{Encoding.UTF8.GetString(message.Body)} EnqueuedTimeUtc:{message.SystemProperties.EnqueuedTimeUtc} ");
 
             //Complete the message so it is not received again
             // This can be done only if the subscriptionClient is created in ReceiveMode.PeekLock mode (which is the default).
@@ -296,9 +303,9 @@ namespace ServiceBus
             Console.WriteLine($"- Executing Action: {context.Action}");
             return Task.CompletedTask;
         }
-        //ENDS RECEIVE MESSAGES FROM SERVICE BUS SUBSCRIPTION
+        //RECEIVE MESSAGES FROM SERVICE BUS SUBSCRIPTION
 
-        // START: CHECK QUEUE STATUS
+        //CHECK QUEUE STATUS
         
             // TODO: Write a better logic to do not need to statically define queues, topics and Subscriptions. Instead, read from Namespace
         static async Task CheckStatusMainAsync()
@@ -325,7 +332,7 @@ namespace ServiceBus
 
         }
 
-        // END: CHECK QUEUE STATUS
+        //CHECK QUEUE STATUS
 
     }
 }
